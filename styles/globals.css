@@ -1,0 +1,495 @@
+@import "tailwindcss";
+
+/* ================================
+   OpenIPO Global Styles (Premium)
+================================ */
+
+/* Brand colors */
+:root {
+  --teal: #008080;
+  --gold: #ffa500;
+  --bg: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e5e7eb;
+
+  --navbar-height: 64px;
+}
+
+:root.dark {
+  --bg: #0f172a;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: #1e293b;
+  --teal: #14b8a6; /* Brighter teal for dark mode */
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+
+  /* Hide native scrollbar but keep scroll behavior */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Base elements */
+a {
+  color: var(--teal);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: var(--text);
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 900;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+
+p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Smooth animation */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   App Layout
+================================ */
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 1 auto;
+}
+
+/* Layout container */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 18px;
+}
+
+/* Page Title */
+.page-title {
+  margin: 14px 0 6px;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--teal);
+}
+
+/* Muted text */
+.muted {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* ================================
+   IPO Grid
+================================ */
+.ipo-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+/* ================================
+   Footer
+================================ */
+.page-footer {
+  margin-top: 40px;
+  padding: 22px 16px;
+  border-top: 1px solid #eef2f7;
+  font-size: 14px;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ================================
+   Navbar (legacy support)
+   (In case any old styles still used)
+================================ */
+.app-header {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: var(--navbar-height);
+  display: block;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.nav-inner {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  height: 100%;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+/* scroll progress bar */
+.nav-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 4px;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.nav-progress-track {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.nav-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 160ms linear;
+}
+
+/* ================================
+   IPO DETAILS PAGE (Improved)
+================================ */
+.ipo-hero {
+  background: linear-gradient(135deg, #0f766e, #164e63);
+  color: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.25);
+}
+
+.ipo-hero h1 {
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0 0 6px;
+  color: white;
+}
+
+.ipo-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 800;
+}
+
+.price-box {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+/* Section card */
+.section {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--teal);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Timeline */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  text-align: center;
+}
+
+.timeline-item {
+  background: #f0fdfa;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  border: 1px solid #d9f99d30;
+}
+
+.timeline-item strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--teal);
+  font-weight: 900;
+}
+
+/* Issue cards */
+.issue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.issue-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  background: #fbfdff;
+}
+
+/* Investment options */
+.invest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.invest-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12px;
+  background: #fbfdff;
+}
+
+/* Financial table */
+.fin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.fin-table th,
+.fin-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 10px;
+  text-align: left;
+}
+
+.fin-table th {
+  font-weight: 900;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+/* Links */
+.link-btn {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--teal);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  transition: transform 0.16s ease;
+}
+
+.link-btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.link-btn.secondary {
+  background: var(--gold);
+  color: #000;
+}
+
+/* ================================
+   PREMIUM IPO PROCESS BAR
+================================ */
+.ipo-process {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 22px;
+  padding-top: 30px;
+}
+
+/* Base line */
+.ipo-process::before {
+  content: "";
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 999px;
+}
+
+/* Filled progress line */
+.ipo-process-fill {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #008080, #0f766e);
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.process-step {
+  position: relative;
+  text-align: center;
+  width: 25%;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Dot */
+.process-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin: 0 auto 8px;
+  background: #e5e7eb;
+  position: relative;
+  z-index: 2;
+}
+
+/* Completed */
+.process-step.completed .process-dot {
+  background: #008080;
+}
+
+.process-step.completed {
+  color: #008080;
+  font-weight: 900;
+}
+
+/* Current */
+.process-step.current .process-dot {
+  background: #ffa500;
+  box-shadow: 0 0 0 6px rgba(255, 165, 0, 0.25);
+}
+
+.process-step.current {
+  color: #ffa500;
+  font-weight: 900;
+}
+
+/* Date */
+.process-date {
+  font-size: 11px;
+  margin-top: 2px;
+  color: #6b7280;
+}
+
+.process-meta {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #008080;
+  font-weight: 900;
+}
+
+/* ================================
+   Responsive
+================================ */
+@media (max-width: 680px) {
+  .container {
+    padding: 16px 14px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .ipo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Hide scrollbar for WebKit browsers */
+.element {
+  scrollbar-width: none;
+  /* For Firefox */
+}
+
+.element::-webkit-scrollbar {
+  display: none;
+  /* For Chrome, Safari, and Opera */
+}
