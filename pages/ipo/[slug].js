@@ -11,7 +11,7 @@ import IPODocuments from '../../components/IPO/IPODocuments';
 import IPOAbout from '../../components/IPO/IPOAbout';
 
 /**
- * Server Side Props: Fetches data for SEO and initial render
+ * Server Side Props: Fetches data for SEO and initial render this is the slug page whoose
  */
 export async function getServerSideProps(context) {
     const { slug } = context.params;
