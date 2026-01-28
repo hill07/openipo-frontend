@@ -1,14 +1,14 @@
 import Head from 'next/head';
 import { iposAPI } from '../../services/api';
-import IPOHeader from '../../components/IPO/IPOHeader';
-import IPOTimeline from '../../components/IPO/IPOTimeline';
-import IPOStatsGrid from '../../components/IPO/IPOStatsGrid';
-import IPOSubscriptionTable from '../../components/IPO/IPOSubscriptionTable';
-import IPOGMPCard from '../../components/IPO/IPOGMPCard';
-import IPOFinancials from '../../components/IPO/IPOFinancials';
-import IPORegistrar from '../../components/IPO/IPORegistrar';
-import IPODocuments from '../../components/IPO/IPODocuments';
-import IPOAbout from '../../components/IPO/IPOAbout';
+import IPOHeader from '../../components/ipo/IPOHeader';
+import IPOTimeline from '../../components/ipo/IPOTimeline';
+import IPOStatsGrid from '../../components/ipo/IPOStatsGrid';
+import IPOSubscriptionTable from '../../components/ipo/IPOSubscriptionTable';
+import IPOGMPCard from '../../components/ipo/IPOGMPCard';
+import IPOFinancials from '../../components/ipo/IPOFinancials';
+import IPORegistrar from '../../components/ipo/IPORegistrar';
+import IPODocuments from '../../components/ipo/IPODocuments';
+import IPOAbout from '../../components/ipo/IPOAbout';
 
 /**
  * Server Side Props: Fetches data for SEO and initial render this is the slug page whoose
