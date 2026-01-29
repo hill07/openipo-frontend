@@ -141,46 +141,18 @@ export default function IPOCalendarPage() {
       });
     }
 
-    // ✅ Select max 5 empty days for SEO "OpenIPO" watermark logic
+    // ✅ Show "OpenIPO" watermark in ALL empty days
     const emptyIndices = cells
       .map((c, i) => (c && c.events.length === 0 ? i : -1))
       .filter((i) => i !== -1);
 
-    // Mark ALL empty cells as having watermark content (hidden by default)
-    emptyIndices.forEach(idx => {
+    // Mark ALL empty cells as having visible watermark
+    emptyIndices.forEach((idx) => {
       if (cells[idx]) {
         cells[idx].hasWatermark = true;
-        cells[idx].watermarkVisible = false;
+        cells[idx].watermarkVisible = true;
       }
     });
-
-    let count = 0;
-    let lastIdx = -999;
-
-    // Deterministic pseudo-random selection based on month to keep it stable
-    const seed = year * 12 + month;
-    const step = Math.max(2, Math.floor(emptyIndices.length / 5));
-
-    for (let i = 0; i < emptyIndices.length; i++) {
-      // Simple distribution strategy
-      const cellIdx = emptyIndices[i];
-      if (count < 5 && (cellIdx - lastIdx) >= 2) {
-        // Basic modulo check to spread them somewhat randomly but deterministically
-        if ((cellIdx + seed) % step === 0 || emptyIndices.length < 10) {
-          if (cells[cellIdx]) {
-            cells[cellIdx].watermarkVisible = true;
-            lastIdx = cellIdx;
-            count++;
-          }
-        }
-      }
-    }
-
-    // Ensure at least one if we have empty days and didn't pick any (edge case)
-    if (count === 0 && emptyIndices.length > 0) {
-      const mid = emptyIndices[Math.floor(emptyIndices.length / 2)];
-      if (cells[mid]) cells[mid].watermarkVisible = true;
-    }
 
     return cells;
   }, [startDay, daysInMonth, year, month, eventsByDay]);
@@ -548,7 +520,7 @@ export default function IPOCalendarPage() {
         }
         .watermark-container.visible {
             flex: 1;
-            opacity: 0.8;
+            opacity: 0.4;
         }
         .watermark-container.hidden {
             position: absolute;
