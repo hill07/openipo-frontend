@@ -20,7 +20,7 @@ export async function getServerSideProps() {
             const status = getIPOStatusFromDates(normalizedDates) || ipo.status;
             return status === "Upcoming";
         });
-
+//only for 
         // Map API data to component props structure
         const ipos = upcomingIPOs.map((ipo) => ({
             ...ipo,
