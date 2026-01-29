@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getIPOStatusFromDates } from "../utils/ipo";
+import { getIPOStatusFromDates, isIPOApplyWindowOpen } from "../utils/ipo";
 import { formatDate } from "../utils/date";
 
 export default function IPORow({ ipo }) {
@@ -112,26 +112,61 @@ export default function IPORow({ ipo }) {
                 }}
                 className="allot-badge"
               >
-                Allotment Out 
+                Allotment Out
               </a>
             )}
           </div>
+
+          {/* Apply Button */}
+          {(() => {
+            const isOpenForApply = isIPOApplyWindowOpen(ipo?.startDate, ipo?.endDate);
+            // Access docs.applyLink from prop if available (structure depends on parent)
+            // Assuming ipo object matches the one in index.js (flattened but might accept docs)
+            // index.js passes: ...ipo, minimumPrice... 
+            // We might need to check if 'docs' is passed. index.js doesn't explicitly destructure 'docs'.
+            // But it spreads ...ipo. So if API returns docs, it's there.
+            const applyLink = ipo?.docs?.applyLink || "https://angel-one.onelink.me/Wjgr/brmlvpa8";
+
+            if (status === "Open" && isOpenForApply) {
+              return (
+                <a
+                  href={applyLink}
+                  target="_blank"
+                  className="apply-btn"
+                >
+                  Apply Now
+                </a>
+              );
+            }
+            return null;
+          })()}
         </div>
 
-        {/* Info Section */}
         <Link href={`/ipo/${ipo?.slug || ""}`} className="content-link" target="_blank">
-          <h3 className="company-name">{ipo?.companyName}</h3>
-          <div className="price-row">{priceBand}</div>
-        </Link>
+          <div className="content-row">
+            <div className="logo-wrapper">
+              {ipo?.logo ? (
+                <img src={ipo.logo} alt={ipo.companyName} className="row-logo" />
+              ) : (
+                <div className="row-logo-placeholder">{ipo?.companyName?.charAt(0)}</div>
+              )}
+            </div>
 
-        {/* GMP Section */}
-        {gmpValue !== null && (
-          <div className="gmp-display">
-            <span className="gmp-label">GMP</span>
-            <span className="gmp-val">₹{gmpValue}</span>
-            {returnPercent && <span className="gmp-pct">({returnPercent}%)</span>}
+            <div className="details-col">
+              <h3 className="company-name">{ipo?.companyName}</h3>
+              <div className="price-row">{priceBand}</div>
+
+              {/* GMP Section Inside Link for alignment */}
+              {gmpValue !== null && (
+                <div className="gmp-display">
+                  <span className="gmp-label">GMP</span>
+                  <span className="gmp-val">₹{gmpValue}</span>
+                  {returnPercent && <span className="gmp-pct">({returnPercent}%)</span>}
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </Link>
       </div>
 
       {/* Timeline Section */}
@@ -239,49 +274,106 @@ export default function IPORow({ ipo }) {
             100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
         }
 
+        .apply-btn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            background: #000;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .apply-btn:hover {
+            opacity: 0.8;
+        }
+
         .content-link {
             text-decoration: none;
             display: block;
+        }
+
+        .content-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .logo-wrapper {
+            flex-shrink: 0;
+            padding-top: 0; /* Align with top */
+        }
+        
+        .row-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .row-logo-placeholder {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #64748b;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .details-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .company-name {
             font-size: 1.15rem;
             font-weight: 700;
             color: #0f172a;
-            margin: 0 0 4px 0;
+            margin: 0;
+            line-height: 1.2;
         }
         
         .price-row {
             font-size: 0.9rem;
             color: #475569;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin: 0;
         }
 
         .gmp-display {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 8px;
+            margin-top: 2px;
             font-size: 0.9rem;
         }
         
         .gmp-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            color: #94a3b8;
+            color: #64748b;
             background: #f1f5f9;
             padding: 2px 6px;
             border-radius: 4px;
+            text-transform: uppercase;
         }
 
         .gmp-val {
             font-weight: 700;
-            color: #15803d;
+            color: #0f172a; /* Black/Dark Gray */
         }
         
         .gmp-pct {
-            color: #16a34a;
+            color: #334155; /* Neutral Dark Gray */
             font-size: 0.8rem;
         }
 

@@ -43,6 +43,24 @@ export default function AdminIPOList() {
         }
     };
 
+    const handleTogglePublish = async (ipo) => {
+        setActionLoading(ipo.slug);
+        try {
+            const newStatus = !ipo.isPublished;
+            // Optimistic update
+            setIpos(prev => prev.map(p => p.slug === ipo.slug ? { ...p, isPublished: newStatus } : p));
+
+            await adminIpoAPI.update(ipo.slug, { isPublished: newStatus });
+            // No need to refetch if successful, as we did optimistic update. 
+            // But to be safe on derived fields, maybe silent refetch? Nah, publish status is simple.
+        } catch (err) {
+            alert("Toggle failed: " + err.message);
+            fetchIPOs(); // Revert
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
     return (
         <AdminLayoutV2 title="Manage IPOs">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -79,6 +97,7 @@ export default function AdminIPOList() {
                                 <th className="px-6 py-6">Type</th>
                                 <th className="px-6 py-6">Status</th>
                                 <th className="px-6 py-6">Dates</th>
+                                <th className="px-6 py-6 text-center">Visible</th>
                                 <th className="px-8 py-6 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -106,6 +125,15 @@ export default function AdminIPOList() {
                                         </td>
                                         <td className="px-6 py-5 text-sm font-mono text-slate-400">
                                             {ipo.dates?.open ? new Date(ipo.dates.open).toLocaleDateString() : 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-5 text-center">
+                                            <button
+                                                onClick={() => handleTogglePublish(ipo)}
+                                                disabled={actionLoading === ipo.slug}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${ipo.isPublished ? 'bg-emerald-500' : 'bg-slate-700'}`}
+                                            >
+                                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${ipo.isPublished ? 'translate-x-6' : 'translate-x-1'}`} />
+                                            </button>
                                         </td>
                                         <td className="px-8 py-5 text-right">
                                             <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">

@@ -184,6 +184,28 @@ export function calculateProfit(lots, lotSize, upperPrice, gmp) {
     estimatedProfit,
     estimatedListingPrice,
     gainPercent: parseFloat(gainPercent.toFixed(2)),
+    estimatedListingPrice,
+    gainPercent: parseFloat(gainPercent.toFixed(2)),
     breakEvenPrice: upperPrice
   };
+}
+
+/**
+ * Check if IPO is currently open for applications
+ * Logic: Open Date 10:00 AM to Close Date 4:00 PM
+ */
+export function isIPOApplyWindowOpen(startDate, endDate) {
+  if (!startDate || !endDate) return false;
+
+  const now = new Date();
+
+  // Set Open Time: Start Date 10:00 AM
+  const openTime = new Date(startDate);
+  openTime.setHours(10, 0, 0, 0);
+
+  // Set Close Time: End Date 4:00 PM (16:00)
+  const closeTime = new Date(endDate);
+  closeTime.setHours(16, 0, 0, 0);
+
+  return now >= openTime && now <= closeTime;
 }

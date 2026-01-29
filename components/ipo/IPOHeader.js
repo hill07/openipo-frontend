@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { isIPOApplyWindowOpen } from '../../utils/ipo';
 
 export default function IPOHeader({ ipo }) {
     const { companyName, logo, symbol, sector, type, status } = ipo;
@@ -45,8 +46,11 @@ export default function IPOHeader({ ipo }) {
                 {/* Right: Status Badge & Apply Button */}
                 <div className="flex flex-col items-end gap-3 w-full md:w-auto">
                     {/* Status Badge */}
-                    {/* Status Badge */}
                     {(() => {
+                        // Determine real-time status for Apply button
+                        const isOpenForApply = isIPOApplyWindowOpen(ipo.dates?.open, ipo.dates?.close);
+                        const applyLink = ipo.docs?.applyLink || "https://angelone.com";
+
                         // User Request: "never show any other status only show open,close,upcoming"
                         let displayStatus = status;
                         if (status === 'LISTED' || status === 'ALLOTMENT') {
@@ -63,25 +67,28 @@ export default function IPOHeader({ ipo }) {
                         }
 
                         return (
-                            <div className={`px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 ${getStatusStyles(displayStatus)}`}>
-                                <span className={`w-2 h-2 rounded-full ${displayStatus === 'OPEN' ? 'bg-green-600 animate-pulse' :
-                                    displayStatus === 'UPCOMING' ? 'bg-blue-600' :
-                                        'bg-slate-500' // CLOSED dot
-                                    }`}></span>
-                                {displayStatus}
-                            </div>
+                            <>
+                                <div className={`px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 ${getStatusStyles(displayStatus)}`}>
+                                    <span className={`w-2 h-2 rounded-full ${displayStatus === 'OPEN' ? 'bg-green-600 animate-pulse' :
+                                        displayStatus === 'UPCOMING' ? 'bg-blue-600' :
+                                            'bg-slate-500' // CLOSED dot
+                                        }`}></span>
+                                    {displayStatus}
+                                </div>
+
+                                {/* Apply Button */}
+                                {displayStatus === 'OPEN' && isOpenForApply && (
+                                    <Link
+                                        href={applyLink}
+                                        target='_blank'
+                                        className="w-full md:w-auto text-center px-6 py-2.5 bg-black hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
+                                    >
+                                        Apply Now &rarr;
+                                    </Link>
+                                )}
+                            </>
                         );
                     })()}
-
-                    {status === 'OPEN' && ipo.docs?.applyLink && (
-                        <Link
-                            href={ipo.docs.applyLink}
-                            target='_blank'
-                            className="w-full md:w-auto text-center px-6 py-2.5 bg-black hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-all active:scale-95"
-                        >
-                            Apply Now
-                        </Link>
-                    )}
                 </div>
 
             </div>

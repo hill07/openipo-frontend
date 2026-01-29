@@ -2,59 +2,66 @@ import Link from "next/link";
 import { formatDate } from "../utils/date";
 
 export default function OpenIPOCard({ ipo }) {
-    const { companyName, type, slug, endDate, minimumPrice, maximumPrice, gmpPrice } = ipo;
+  const { companyName, type, slug, endDate, minimumPrice, maximumPrice, gmpPrice } = ipo;
 
-    const priceRange = minimumPrice && maximumPrice
-        ? `₹${minimumPrice} - ₹${maximumPrice}`
-        : "Price TBA";
+  const priceRange = minimumPrice && maximumPrice
+    ? `₹${minimumPrice} - ₹${maximumPrice}`
+    : "Price TBA";
 
-    // Calculate generic return % if GMP available (using frontend check only)
-    const maxP = parseFloat(maximumPrice);
-    const gmpP = parseFloat(gmpPrice);
-    const gainPct = (maxP && gmpP) ? ((gmpP / maxP) * 100).toFixed(1) : null;
+  // Calculate generic return % if GMP available (using frontend check only)
+  const maxP = parseFloat(maximumPrice);
+  const gmpP = parseFloat(gmpPrice);
+  const gainPct = (maxP && gmpP) ? ((gmpP / maxP) * 100).toFixed(1) : null;
 
-    return (
-        <div className="open-card">
-            <div className="main-info">
-                <div className="badge-row">
-                    <span className="live-badge">
-                        <span className="pulse-dot"></span> Live
-                    </span>
-                    <span className="type-badge">{type === "SME" ? "SME" : "Mainboard"}</span>
-                </div>
+  return (
+    <div className="open-card">
+      <div className="main-info">
+        <div className="badge-row">
+          <span className="live-badge">
+            <span className="pulse-dot"></span> Live
+          </span>
+          <span className="type-badge">{type === "SME" ? "SME" : "Mainboard"}</span>
+        </div>
 
-                <Link href={`/ipo/${slug}`} className="company-link">
-                    <h3 className="company-name">{companyName}</h3>
-                </Link>
-                <div className="price-row">{priceRange}</div>
+        <div className="logo-row">
+          {ipo.logo ? (
+            <img src={ipo.logo} alt={companyName} className="logo-img" />
+          ) : (
+            <div className="logo-placeholder">{companyName?.charAt(0)}</div>
+          )}
+          <Link href={`/ipo/${slug}`} className="company-link">
+            <h3 className="company-name">{companyName}</h3>
+          </Link>
+        </div>
+        <div className="price-row">{priceRange}</div>
+      </div>
+
+      <div className="stats-container">
+        <div className="stat-box">
+          <span className="label">Closes On</span>
+          <span className="value">{formatDate(endDate)}</span>
+        </div>
+
+        <div className="stat-box highlight">
+          <span className="label">GMP Trend</span>
+          {gmpPrice ? (
+            <div className="gmp-val">
+              <span>₹{gmpPrice}</span>
+              {gainPct && <span className="gain">+{gainPct}%</span>}
             </div>
+          ) : (
+            <span className="value text-muted">--</span>
+          )}
+        </div>
+      </div>
 
-            <div className="stats-container">
-                <div className="stat-box">
-                    <span className="label">Closes On</span>
-                    <span className="value">{formatDate(endDate)}</span>
-                </div>
+      <div className="action-area">
+        <Link href={`/ipo/${slug}`} className="view-btn">
+          View Details &rarr;
+        </Link>
+      </div>
 
-                <div className="stat-box highlight">
-                    <span className="label">GMP Trend</span>
-                    {gmpPrice ? (
-                        <div className="gmp-val">
-                            <span>₹{gmpPrice}</span>
-                            {gainPct && <span className="gain">+{gainPct}%</span>}
-                        </div>
-                    ) : (
-                        <span className="value text-muted">--</span>
-                    )}
-                </div>
-            </div>
-
-            <div className="action-area">
-                <Link href={`/ipo/${slug}`} className="view-btn">
-                    View Subscription &rarr;
-                </Link>
-            </div>
-
-            <style jsx>{`
+      <style jsx>{`
         .open-card {
           background: #fff;
           border: 1px solid #e2e8f0;
@@ -124,11 +131,39 @@ export default function OpenIPOCard({ ipo }) {
           text-decoration: none;
         }
 
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+        
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #64748b;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+
         .company-name {
           font-size: 1.25rem;
           font-weight: 700;
           color: #0f172a;
-          margin: 0 0 4px 0;
+          margin: 0;
+          line-height: 1.2;
         }
 
         .price-row {
@@ -202,6 +237,6 @@ export default function OpenIPOCard({ ipo }) {
           background: #1e293b;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 }

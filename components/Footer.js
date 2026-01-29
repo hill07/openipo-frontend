@@ -54,7 +54,7 @@ export default function Footer() {
                 openipo.in@gmail.com
               </a>
               <p className="supportNote">
-                For inquiries, feedback, bug reports, or partnership.
+                For inquiries, feedback, bug reports
               </p>
             </div>
           </div>

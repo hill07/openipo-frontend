@@ -15,7 +15,7 @@ export default function IPOTimeline({ dates }) {
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-6">Tentative Timetable</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-6">Dates</h3>
 
             <div className="relative">
                 {/* Desktop Step UI */}

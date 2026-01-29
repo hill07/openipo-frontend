@@ -13,7 +13,7 @@ export default function IPOStatsGrid({ ipo }) {
                 : formatCurrency(ipo.priceBand?.min)
         },
         { label: 'Lot Size', value: ipo.lotSize ? `${ipo.lotSize.toLocaleString('en-IN')} Shares` : 'TBA' },
-        { label: 'Total Issue Size', value: formatCrores(ipo.issueSize?.cr) },
+        { label: 'Total Issue Size', value: formatCrores(ipo.issueSize?.cr || ipo.issueBreakdown?.total?.cr) },
         { label: 'Fresh Issue', value: formatCrores(ipo.issueBreakdown?.fresh?.cr) },
         { label: 'Offer for Sale', value: formatCrores(ipo.issueBreakdown?.ofs?.cr) },
         { label: 'Face Value', value: formatCurrency(ipo.faceValue) },

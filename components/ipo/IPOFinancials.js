@@ -1,8 +1,38 @@
-export default function IPOFinancials({ financials }) {
+export default function IPOFinancials({ financials, type }) {
     if (!financials || !financials.table || financials.table.length === 0) return null;
 
-    // Reverse to show latest first if needed, usually passed correct from backend
-    const data = financials.table;
+    const data = financials.table; // Array of objects { period, assets, ... }
+
+    // Define the metrics to display as rows
+    const metrics = [
+        { key: 'assets', label: 'Assets' },
+        { key: 'totalIncome', label: 'Total Income' },
+        { key: 'pat', label: 'PAT' },
+        { key: 'ebitda', label: 'EBITDA' },
+        { key: 'netWorth', label: 'Net Worth' },
+        { key: 'reservesSurplus', label: 'Reserves' },
+        { key: 'totalBorrowing', label: 'Total Borrowing' },
+    ];
+
+    let kpiMetrics = [];
+
+    if (type === 'SME') {
+        kpiMetrics = [
+            { key: 'roe', label: 'ROE (%)' },
+            { key: 'roce', label: 'ROCE (%)' },
+            { key: 'eps', label: 'EPS (₹)' },
+            { key: 'pePre', label: 'P/E (Pre)' },
+            { key: 'pePost', label: 'P/E (Post)' },
+        ];
+    } else {
+        // Default / MAINBOARD
+        kpiMetrics = [
+            { key: 'ronw', label: 'RoNW (%)' },
+            { key: 'eps', label: 'EPS (₹)' },
+            { key: 'pePre', label: 'P/E (Pre)' },
+            { key: 'pePost', label: 'P/E (Post)' },
+        ];
+    }
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
@@ -10,49 +40,68 @@ export default function IPOFinancials({ financials }) {
             <p className="text-sm text-slate-500 mb-6">Figures in ₹ Crores unless specified</p>
 
             <div className="overflow-x-auto rounded-lg border border-slate-100">
-                <table className="w-full text-left">
+                <table className="w-full text-left border-collapse">
                     <thead className="bg-slate-50">
                         <tr>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase whitespace-nowrap">Period</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">Assets</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">Total Income</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">PAT</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">EBITDA</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">Net Worth</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">Reserves</th>
-                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">Total Borrowing</th>
+                            <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase whitespace-nowrap">Metric</th>
+                            {data.map((col, i) => (
+                                <th key={i} className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">
+                                    {col.period}
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((row, i) => (
-                            <tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
-                                <td className="py-3 px-4 text-sm font-bold text-slate-700 whitespace-nowrap">{row.period}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.assets}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.totalIncome}</td>
-                                <td className="py-3 px-4 text-sm font-bold text-slate-900 text-right">{row.pat}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.ebitda}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.netWorth}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.reservesSurplus}</td>
-                                <td className="py-3 px-4 text-sm font-medium text-slate-600 text-right">{row.totalBorrowing}</td>
+                        {metrics.map((metric, i) => (
+                            <tr key={metric.key} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
+                                <td className={`py-3 px-4 text-sm font-bold text-slate-700 whitespace-nowrap ${metric.key === 'pat' ? 'text-slate-900' : ''
+                                    }`}>
+                                    {metric.label}
+                                </td>
+                                {data.map((col, j) => (
+                                    <td key={j} className={`py-3 px-4 text-sm font-medium text-right whitespace-nowrap ${metric.key === 'pat' ? 'font-bold text-slate-900' : 'text-slate-600'
+                                        }`}>
+                                        {col[metric.key] !== undefined && col[metric.key] !== null ? col[metric.key] : '-'}
+                                    </td>
+                                ))}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
 
-            {/* KPIs */}
+            {/* KPIs Table */}
             {financials.kpis && financials.kpis.length > 0 && (
-                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {['roe', 'roce', 'eps', 'ronw'].map(metric => {
-                        const val = financials.kpis[0][metric]; // Taking latest
-                        if (!val) return null;
-                        return (
-                            <div key={metric} className="p-3 bg-slate-50 rounded-lg">
-                                <div className="text-xs text-slate-500 uppercase font-bold mb-1">{metric}</div>
-                                <div className="text-lg font-bold text-slate-900">{val}{metric === 'eps' ? '' : '%'}</div>
-                            </div>
-                        )
-                    })}
+                <div className="mt-8">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Key Performance Indicators</h3>
+                    <div className="overflow-x-auto rounded-lg border border-slate-100">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-slate-50">
+                                <tr>
+                                    <th className="py-3 px-4 text-xs font-bold text-slate-500 uppercase whitespace-nowrap">KPI</th>
+                                    {financials.kpis.map((col, i) => (
+                                        <th key={i} className="py-3 px-4 text-xs font-bold text-slate-500 uppercase text-right whitespace-nowrap">
+                                            {col.period}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {kpiMetrics.map((metric) => (
+                                    <tr key={metric.key} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
+                                        <td className="py-3 px-4 text-sm font-bold text-slate-700 whitespace-nowrap">
+                                            {metric.label}
+                                        </td>
+                                        {financials.kpis.map((col, j) => (
+                                            <td key={j} className="py-3 px-4 text-sm font-medium text-slate-600 text-right whitespace-nowrap">
+                                                {col[metric.key] !== undefined && col[metric.key] !== null ? col[metric.key] : '-'}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
         </div>

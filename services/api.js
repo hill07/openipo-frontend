@@ -14,8 +14,8 @@ import { authStorage } from '../utils/authStorage';
 // Server-side (SSR): Use direct backend URL (remote)
 // Client-side: Use relative path /api to go through Next.js proxy
 const API_BASE = (typeof window === 'undefined')
-? `${process.env.API_PROXY_TARGET || 'https://openipo-backend.onrender.com'}/api`
-: "/api";
+  ? (process.env.API_PROXY_TARGET || (process.env.NODE_ENV === 'production' ? 'https://openipo-backend.onrender.com' : 'http://localhost:5000')) + '/api'
+  : "/api";
 
 // Create Axios instance
 const api = axios.create({

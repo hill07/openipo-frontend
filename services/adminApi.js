@@ -37,7 +37,8 @@ export const adminAuthAPI = {
     logout: () => adminApi.post('/admin/auth/logout'),
     getMe: () => adminApi.get('/admin/auth/me'),
     setup2FA: (data) => adminApi.post('/admin/auth/2fa/setup', data), // data optional if logged in, tempToken if not
-    confirm2FA: (data) => adminApi.post('/admin/auth/2fa/confirm', data)
+    confirm2FA: (data) => adminApi.post('/admin/auth/2fa/confirm', data),
+    changePassword: (data) => adminApi.put('/admin/auth/password', data),
 };
 
 export const adminIpoAPI = {

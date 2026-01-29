@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { adminIpoAPI } from '../../services/adminApi';
 import { Save, Loader2, CheckCircle, Info, FileText, TrendingUp, Users, Coins } from 'lucide-react';
 import Link from 'next/link';
@@ -14,6 +15,7 @@ import SubscriptionInfo from './ipo-form/SubscriptionInfo';
 import DetailsInfo from './ipo-form/DetailsInfo';
 
 export default function IPOForm({ initialData = {}, isEdit = false }) {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState('basic');
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ type: '', text: '' });
@@ -218,8 +220,16 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
                 await adminIpoAPI.update(payload.slug, payload);
                 setMsg({ type: 'success', text: 'IPO Updated Successfully!' });
             } else {
-                await adminIpoAPI.create(payload);
-                setMsg({ type: 'success', text: 'IPO Created Successfully!' });
+                const response = await adminIpoAPI.create(payload);
+                setMsg({ type: 'success', text: 'IPO Created Successfully! Redirecting...' });
+                // Redirect to edit mode to prevent duplicate creation on subsequent saves
+                const newSlug = response.data?.slug;
+                if (newSlug) {
+                    // Use replace to avoid back-button returning to create page
+                    setTimeout(() => {
+                        router.replace(`/admin/ipos/edit/${newSlug}`);
+                    }, 1500);
+                }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
 

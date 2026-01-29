@@ -1,37 +1,9 @@
 import Link from "next/link";
 import Head from "next/head";
-import { useState, useEffect } from "react";
-import { Moon, Sun } from "lucide-react";
+import { useState } from "react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isDark = localStorage.getItem("theme") === "dark" ||
-        (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-      setDarkMode(isDark);
-      if (isDark) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setDarkMode(true);
-    }
-  };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -51,11 +23,6 @@ export default function Navbar() {
               transition: background-color 0.3s;
             }
             
-            :global(html.dark) nav {
-              background-color: #1e293b;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            }
-
             .navInner {
               display: flex;
               align-items: center;
@@ -78,8 +45,6 @@ export default function Navbar() {
               white-space: nowrap;
             }
             
-            :global(html.dark) .logo { color: #f8fafc; }
-
             .logoImage {
               height: 40px;
               width: auto;
@@ -106,12 +71,9 @@ export default function Navbar() {
               white-space: nowrap;
             }
             
-            :global(html.dark) .link { color: #cbd5e1; }
-
             .link:hover {
               background-color: #f1f5f9;
             }
-            :global(html.dark) .link:hover { background-color: #334155; }
 
             /* Buttons */
             .iconButton {
@@ -126,14 +88,9 @@ export default function Navbar() {
               color: #475569;
               transition: all 0.2s;
             }
-            :global(html.dark) .iconButton { 
-              border-color: #475569; 
-              color: #e2e8f0;
-            }
             .iconButton:hover {
               background-color: #f1f5f9;
             }
-            :global(html.dark) .iconButton:hover { background-color: #334155; }
 
             /* Hamburger menu for mobile */
             .menuIcon {
@@ -156,7 +113,6 @@ export default function Navbar() {
               border-radius: 1.5px;
               transition: background-color 0.3s;
             }
-            :global(html.dark) .bar { background-color: #cbd5e1; }
 
             /* Mobile menu styles */
             .mobileMenu {
@@ -166,10 +122,6 @@ export default function Navbar() {
               padding: 10px 20px;
               border-top: 1px solid #e5e7eb;
             }
-            :global(html.dark) .mobileMenu { 
-              background-color: #1e293b; 
-              border-color: #334155;
-            }
 
             .mobileLink {
               padding: 12px 0;
@@ -178,10 +130,6 @@ export default function Navbar() {
               font-weight: 600;
               font-size: 0.95rem;
               border-bottom: 1px solid #f1f5f9;
-            }
-            :global(html.dark) .mobileLink { 
-              color: #e2e8f0; 
-              border-color: #334155;
             }
             .mobileLink:last-child { border-bottom: none; }
 
@@ -203,7 +151,6 @@ export default function Navbar() {
               font-weight: 800;
               color: #64748b;
             }
-            :global(html.dark) .tagline { color: #94a3b8; }
           `}
         </style>
       </Head>
@@ -225,14 +172,6 @@ export default function Navbar() {
             <Link href="/open" className="link">Open</Link>
             <Link href="/closed" className="link">Closed</Link>
             <Link href="/ipo-calendar" className="link">Calendar</Link>
-
-            <button
-              className="iconButton"
-              onClick={toggleTheme}
-              aria-label="Toggle Dark Mode"
-            >
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
           </div>
 
           {/* Hamburger Menu for Mobile */}
@@ -254,17 +193,6 @@ export default function Navbar() {
             <Link href="/open" className="mobileLink" onClick={() => setMenuOpen(false)}>Open</Link>
             <Link href="/closed" className="mobileLink" onClick={() => setMenuOpen(false)}>Closed</Link>
             <Link href="/ipo-calendar" className="mobileLink" onClick={() => setMenuOpen(false)}>Calendar</Link>
-
-            <div className="flex items-center justify-between py-3 border-t border-slate-200 dark:border-slate-700 mt-2">
-              <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Appearance</span>
-              <button
-                className="iconButton"
-                onClick={toggleTheme}
-                aria-label="Toggle Dark Mode"
-              >
-                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-              </button>
-            </div>
           </div>
         )}
       </nav>

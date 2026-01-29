@@ -9,18 +9,40 @@ import IPOFinancials from '../../components/ipo/IPOFinancials';
 import IPORegistrar from '../../components/ipo/IPORegistrar';
 import IPODocuments from '../../components/ipo/IPODocuments';
 import IPOAbout from '../../components/ipo/IPOAbout';
+import IPOPeers from '../../components/ipo/IPOPeers';
+import IPOCompanyInfo from '../../components/ipo/IPOCompanyInfo';
+import IPOLotSize from '../../components/ipo/IPOLotSize';
 
 /**
- * Server Side Props: Fetches data for SEO and initial render this is the slug page whoose
+ * Static Paths: Pre-render paths for better performance (ISR)
  */
-export async function getServerSideProps(context) {
+export async function getStaticPaths() {
+    try {
+        // Fetch top 20 active/popular IPOs to pre-render
+        // Assuming getAll supports pagination or limit. If not, we might fetch all (if count is low)
+        // or just fallback to blocking.
+        const response = await iposAPI.getAll({ limit: 20 });
+        const ipos = response.data?.ipos || []; // Access nested ipos array
+
+        const paths = ipos.map((ipo) => ({
+            params: { slug: ipo.slug },
+        }));
+
+        return { paths, fallback: 'blocking' };
+    } catch (error) {
+        console.error("Error fetching paths:", error);
+        return { paths: [], fallback: 'blocking' };
+    }
+}
+
+/**
+ * Static Props: Fetches data at build time + Revalidates (ISR)
+ */
+export async function getStaticProps(context) {
     const { slug } = context.params;
 
     try {
-        // API now supports both Slug and ID
         const response = await iposAPI.getBySlug(slug);
-        // Usually response: { success: true, data: { ...wholeIPO } }
-
         const ipo = response.data || null;
 
         if (!ipo) {
@@ -29,6 +51,7 @@ export async function getServerSideProps(context) {
 
         return {
             props: { ipo },
+            revalidate: 60, // Update every 60 seconds
         };
     } catch (error) {
         console.error("Error fetching IPO details:", error);
@@ -51,7 +74,16 @@ export default function IPODetailsPage({ ipo }) {
         objectives,
         promoters,
         dates,
-        about
+        about,
+        peers,
+        address,
+        leadManagers,
+        marketMaker,
+        strengths,
+        weaknesses,
+        lotSize,
+        lotDistribution,
+        limits
     } = ipo;
 
     // SEO
@@ -77,6 +109,31 @@ export default function IPODetailsPage({ ipo }) {
                 <meta property="og:description" content={desc} />
                 <meta property="og:url" content={canonicalUrl} />
                 <meta property="og:type" content="article" />
+                {ipo.logo && <meta property="og:image" content={ipo.logo} />}
+
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "FinancialProduct",
+                            "name": companyName,
+                            "description": description,
+                            "brand": {
+                                "@type": "Brand",
+                                "name": companyName
+                            },
+                            "offers": {
+                                "@type": "Offer",
+                                "priceCurrency": "INR",
+                                "price": priceBand?.max || priceBand?.min || "0",
+                                "availability": dates?.open ? "https://schema.org/PreOrder" : "https://schema.org/InStock"
+                            },
+                            "image": ipo.logo || ""
+                        })
+                    }}
+                />
             </Head>
 
             <div className="bg-slate-50 min-h-screen pb-12">
@@ -106,15 +163,20 @@ export default function IPODetailsPage({ ipo }) {
                             <IPOTimeline dates={dates} />
                             <IPOStatsGrid ipo={ipo} />
 
-                            {/* Mobile: Show GMP/Subs here if needed, but sticky sidebar is better often. 
-                    However, for mobile usually sidebar drops to bottom. 
-                    Let's duplicating GMP for Mobile Top might be too cluttery.
-                    Standard flow: Timeline -> Stats -> Financials -> About 
-                */}
+                            {/* New Sections */}
+                            <IPOLotSize lotDistribution={lotDistribution} limits={limits} lotSize={lotSize} />
 
-                            <IPOFinancials financials={financials} />
+                            <IPOFinancials financials={financials} type={ipo.type} />
+                            <IPOPeers peers={peers} />
 
                             <IPOAbout title={`About ${companyName}`} content={description} />
+                            <IPOCompanyInfo
+                                address={address}
+                                leadManagers={leadManagers}
+                                marketMaker={marketMaker}
+                                strengths={strengths}
+                                weaknesses={weaknesses}
+                            />
 
                             {objectContent && <IPOAbout title="Objects of the Issue" content={objectContent} />}
 
@@ -130,7 +192,9 @@ export default function IPODetailsPage({ ipo }) {
                             <div className="hidden lg:block">
                                 <IPOGMPCard gmp={gmp} priceBand={priceBand} />
                             </div>
+
                             <IPOSubscriptionTable subscription={subscription} />
+
                             <IPORegistrar
                                 registrar={registrar}
                                 registrarAddress={registrarAddress}
@@ -141,6 +205,15 @@ export default function IPODetailsPage({ ipo }) {
                             />
                         </div>
 
+                    </div>
+                    {/* Global Disclaimer */}
+                    <div className="mt-12 p-6 bg-slate-100 rounded-2xl text-xs text-slate-500 text-center leading-relaxed">
+                        <p className="font-bold mb-2">Disclaimer</p>
+                        <p>
+                            Investment in Pre-IPO/Unlisted Shares/IPO is subject to market risks. OpenIPO.in is not a SEBI registered entity.
+                            The information provided here is for educational purposes only and should not be considered as financial advice.
+                            GMP prices are estimated based on market rumors and may vary. Please consult your financial advisor before making any investment decisions.
+                        </p>
                     </div>
                 </div>
             </div>
