@@ -102,37 +102,38 @@ export default function IPORow({ ipo }) {
               {ipo?.type === "SME" ? "SME" : "Mainboard"}
             </span>
 
-            {/* Allotment Out Indicator */}
-            {ipo?.allotment?.isAllotted && (
-              <a
-                href={ipo.allotment.allotmentLink || '#'}
-                target="_blank"
-                onClick={(e) => {
-                  if (!ipo.allotment.allotmentLink) e.preventDefault();
-                }}
-                className="allot-badge"
-              >
-                Allotment Out
-              </a>
-            )}
+
           </div>
 
-          {/* Apply Button */}
+          {/* Action Button: Allotment OR Apply (Mutually Exclusive) */}
           {(() => {
             const isOpenForApply = isIPOApplyWindowOpen(ipo?.startDate, ipo?.endDate);
-            // Access docs.applyLink from prop if available (structure depends on parent)
-            // Assuming ipo object matches the one in index.js (flattened but might accept docs)
-            // index.js passes: ...ipo, minimumPrice... 
-            // We might need to check if 'docs' is passed. index.js doesn't explicitly destructure 'docs'.
-            // But it spreads ...ipo. So if API returns docs, it's there.
             const applyLink = ipo?.docs?.applyLink || "https://angel-one.onelink.me/Wjgr/brmlvpa8";
+            const isAllotted = ipo?.allotment?.isAllotted;
+            const allotmentLink = ipo?.allotment?.allotmentLink;
 
+            // Priority 1: Allotment Out
+            if (isAllotted && allotmentLink) {
+              return (
+                <a
+                  href={allotmentLink}
+                  target="_blank"
+                  className="allot-btn"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Allotment Out
+                </a>
+              );
+            }
+
+            // Priority 2: Apply Now
             if (status === "Open" && isOpenForApply) {
               return (
                 <a
                   href={applyLink}
                   target="_blank"
                   className="apply-btn"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   Apply Now
                 </a>
@@ -287,6 +288,22 @@ export default function IPORow({ ipo }) {
         }
         .apply-btn:hover {
             opacity: 0.8;
+        }
+        
+        .allot-btn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            background: #e11d48;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(225, 29, 72, 0.3);
+            animation: pulse-badge 2s infinite;
+        }
+        .allot-btn:hover {
+            opacity: 0.9;
         }
 
         .content-link {

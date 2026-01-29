@@ -45,6 +45,9 @@ export default function Footer() {
               <Link href="/disclaimer" className="link">Disclaimer</Link>
               <Link href="/privacy-policy" className="link">Privacy Policy</Link>
               <Link href="/terms" className="link">Terms of Service</Link>
+              <a href="https://whatsapp.com/channel/0029VaDaQLQ002TDeqGj6L0l" target="_blank" rel="noopener noreferrer" className="link text-green-500">
+                Join WhatsApp Channel
+              </a>
             </div>
 
             {/* Support */}
