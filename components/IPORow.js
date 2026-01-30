@@ -160,7 +160,7 @@ export default function IPORow({ ipo }) {
               {/* GMP Section Inside Link for alignment */}
               {gmpValue !== null && (
                 <div className="gmp-display">
-                  <span className="gmp-label">GMP</span>
+                  <span className="gmp-label">GMP*</span>
                   <span className="gmp-val">₹{gmpValue}</span>
                   {returnPercent && <span className="gmp-pct">({returnPercent}%)</span>}
                 </div>

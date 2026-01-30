@@ -17,7 +17,7 @@ export default function IPOGMPCard({ gmp, priceBand }) {
 
             {/* Header */}
             <div className="flex justify-between mb-2">
-                <h3 className="text-sm font-bold text-slate-900">Grey Market Premium</h3>
+                <h3 className="text-sm font-bold text-slate-900">Grey Market Premium*</h3>
                 <span className="text-[9px] font-semibold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
                     UPDATED: {gmp.lastUpdatedAtText || 'Now'}
                 </span>

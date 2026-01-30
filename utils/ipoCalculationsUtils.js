@@ -45,41 +45,78 @@ export const computeFrontendDerivedFields = (data) => {
         newData.status = calculateIpoStatus(newData.dates);
     }
 
-    // 4. Subscription Summary
+    // 4. Dynamic Calculations (Totals & Times)
+
+    // A. Reservations (Shares Offered & Percentage)
+    let totalIssueShares = 0;
+    if (Array.isArray(newData.reservations)) {
+        // Calculate Total Issue Shares
+        // Priority: issueBreakdown.total.shares > issueSize.shares > Sum of Reservations
+        const breakdownTotal = Number(newData.issueBreakdown?.total?.shares);
+        const issueSizeTotal = Number(newData.issueSize?.shares);
+
+        // If neither is available, fallback to sum of reservations (though usually issueSize should be there)
+        const sumReservations = newData.reservations.reduce((acc, r) => (r.enabled !== false ? acc + (Number(r.sharesOffered) || 0) : acc), 0);
+
+        totalIssueShares = breakdownTotal || issueSizeTotal || sumReservations;
+
+        // Calculate Percentages
+        newData.reservations.forEach(r => {
+            if (r.enabled !== false && totalIssueShares > 0) {
+                const shares = Number(r.sharesOffered) || 0;
+                // Add a transient 'percentage' field for UI display only
+                r.percentage = ((shares / totalIssueShares) * 100).toFixed(2);
+            } else {
+                r.percentage = '';
+            }
+        });
+    }
+
+    // B. Subscription (Times)
+    // B. Subscription (Times)
     if (newData.subscription && Array.isArray(newData.subscription.categories)) {
-        const summary = {
-            qib: 0, retail: 0, hni: 0, shni: 0, bhni: 0, emp: 0, total: 0
-        };
         let totalOffered = 0;
         let totalApplied = 0;
 
         newData.subscription.categories.forEach(cat => {
-            const offered = Number(cat.sharesOffered) || 0;
-            const applied = Number(cat.sharesBid) || 0;
-            const times = Number(cat.subscriptionTimes) || 0;
+            if (cat.enabled !== false) {
+                // MarketMaker Excluded
+                if (cat.category === 'MarketMaker') return;
 
-            totalOffered += offered;
-            totalApplied += applied;
+                const offered = Number(cat.sharesOffered) || 0;
+                const applied = Number(cat.appliedShares) || 0;
+                let effectiveOffered = offered;
 
-            const name = (cat.name || '').toLowerCase();
-            if (name.includes('qib')) summary.qib = times;
-            else if (name.includes('retail') || name.includes('individual')) summary.retail = times;
-            else if (name.includes('employee') || name.includes('emp')) summary.emp = times;
-            else if (name.includes('nii') || name.includes('hni')) {
-                if (name.includes('bhni') || name.includes('big')) summary.bhni = times;
-                else if (name.includes('shni') || name.includes('small')) summary.shni = times;
-                else summary.hni = times;
+                // QIB Logic: Subtract Anchor
+                if (cat.category === 'QIB') {
+                    const qibRes = newData.reservations?.find(r => r.category === 'QIB');
+                    const anchor = Number(qibRes?.anchorShares) || 0;
+                    effectiveOffered = Math.max(0, offered - anchor);
+                }
+
+                // Category Times
+                if (effectiveOffered > 0) {
+                    cat.times = (applied / effectiveOffered).toFixed(2);
+                } else {
+                    cat.times = '';
+                }
+
+                totalOffered += effectiveOffered;
+                totalApplied += applied;
             }
         });
 
-        // Total
-        let totalTimes = 0;
+        // Total Times
         if (totalOffered > 0) {
-            totalTimes = Number((totalApplied / totalOffered).toFixed(2));
+            newData.subscription.totalTimes = (totalApplied / totalOffered).toFixed(2);
+            newData.subscription.totalOffered = totalOffered;
+            newData.subscription.totalApplied = totalApplied;
+        } else {
+            newData.subscription.totalTimes = ''; // Display empty if 0
         }
-        summary.total = totalTimes;
 
-        newData.subscription.summary = summary;
+        // Remove old summary if present
+        delete newData.subscription.summary;
     }
 
     return newData;

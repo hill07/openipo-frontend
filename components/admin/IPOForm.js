@@ -73,18 +73,40 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
     // Load initial data
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
+            // Migration: Map old fields to new schema if needed
+            const migratedData = { ...initialData };
+
+            // 1. Subscription Categories
+            if (migratedData.subscription?.categories) {
+                migratedData.subscription.categories = migratedData.subscription.categories.map(c => ({
+                    ...c,
+                    category: c.category || c.name, // Map name -> category
+                    appliedShares: c.appliedShares || c.sharesBid, // Map sharesBid -> appliedShares
+                    enabled: c.enabled !== undefined ? c.enabled : true
+                }));
+            }
+
+            // 2. Reservations
+            if (migratedData.reservations) {
+                migratedData.reservations = migratedData.reservations.map(r => ({
+                    ...r,
+                    category: r.category || r.name,
+                    enabled: r.enabled !== undefined ? r.enabled : true
+                }));
+            }
+
             // Merge initial data with default state to ensure structure
             setFormData(prev => ({
                 ...prev,
-                ...initialData,
+                ...migratedData,
                 financials: {
                     ...(prev.financials || {}),
-                    ...(initialData.financials || {}),
+                    ...(migratedData.financials || {}),
                 },
                 // Ensure allotment object exists and merge carefuly if partial
                 allotment: {
                     ...(prev.allotment || {}),
-                    ...(initialData.allotment || {})
+                    ...(migratedData.allotment || {})
                 }
             }));
         }
@@ -141,7 +163,7 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
 
         try {
             // Clean Payload: Convert strings to numbers where necessary
-            const cleanNumber = (val) => (val === '' || val === null ? null : Number(val));
+            const cleanNumber = (val) => (val === '' || val === null || val === undefined ? null : Number(val));
 
             const payload = {
                 ...formData,
@@ -184,18 +206,31 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
 
                 subscription: {
                     ...formData.subscription,
+                    // Remove summary if present
+                    summary: undefined,
+                    days: formData.subscription?.days?.map(d => ({
+                        day: d.day,
+                        date: d.date,
+                        qib: cleanNumber(d.qib),
+                        retail: cleanNumber(d.retail),
+                        hni: cleanNumber(d.hni),
+                        shni: cleanNumber(d.shni),
+                        bhni: cleanNumber(d.bhni),
+                        total: cleanNumber(d.total)
+                    })),
                     categories: formData.subscription?.categories?.map(c => ({
-                        ...c,
+                        enabled: c.enabled,
+                        category: c.category,
                         sharesOffered: cleanNumber(c.sharesOffered),
-                        sharesBid: cleanNumber(c.sharesBid),
-                        subscriptionTimes: cleanNumber(c.subscriptionTimes)
+                        appliedShares: cleanNumber(c.appliedShares),
                     }))
                 },
 
                 reservations: formData.reservations?.map(r => ({
-                    ...r,
+                    enabled: r.enabled,
+                    category: r.category,
                     sharesOffered: cleanNumber(r.sharesOffered),
-                    percentage: cleanNumber(r.percentage)
+                    anchorShares: cleanNumber(r.anchorShares)
                 })),
 
                 // Ensure arrays are arrays
@@ -210,9 +245,31 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
                 // Explicitly send allotment
                 allotment: formData.allotment,
 
-                // Ensure financials are fully sent
+                // Ensure financials are fully sent and cleaned (remove totalExpenditure)
                 financials: {
-                    ...(formData.financials || {})
+                    ...formData.financials,
+                    table: formData.financials?.table?.map(row => ({
+                        period: row.period,
+                        assets: cleanNumber(row.assets),
+                        totalIncome: cleanNumber(row.totalIncome),
+                        // totalExpenditure: Removed
+                        pat: cleanNumber(row.pat),
+                        ebitda: cleanNumber(row.ebitda),
+                        netWorth: cleanNumber(row.netWorth),
+                        reservesSurplus: cleanNumber(row.reservesSurplus),
+                        totalBorrowing: cleanNumber(row.totalBorrowing)
+                    })),
+                    kpis: formData.financials?.kpis // KPIs usually fine, numbers handled by inputs but better to clean? Inputs are text.
+                        ?.map(k => {
+                            // Clean all numeric values dynamically
+                            const cleaned = { period: k.period };
+                            Object.keys(k).forEach(key => {
+                                if (key !== 'period') {
+                                    cleaned[key] = cleanNumber(k[key]);
+                                }
+                            });
+                            return cleaned;
+                        })
                 }
             };
 
@@ -307,7 +364,7 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
                 {activeTab === 'details' && <DetailsInfo data={formData} onChange={handleChange} />}
                 {activeTab === 'financials' && <FinancialsInfo data={formData} onChange={handleChange} type={formData.type} />}
                 {activeTab === 'gmp' && <GMPInfo data={formData} onChange={handleChange} />}
-                {activeTab === 'subscription' && <SubscriptionInfo data={formData} onChange={handleChange} />}
+                {activeTab === 'subscription' && <SubscriptionInfo data={calculated} onChange={handleChange} />}
 
                 <div className="mt-8 pt-6 border-t border-slate-700/50 flex justify-end gap-3 sticky bottom-0 bg-slate-900/95 p-4 rounded-xl backdrop-blur-md shadow-2xl z-50">
                     <Link href="/admin/ipos" className="px-6 py-3 rounded-xl border border-slate-600/50 text-slate-300 hover:bg-slate-800 font-medium transition-colors">Cancel</Link>

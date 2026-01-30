@@ -200,7 +200,6 @@ export default function IPODetailsPage({ ipo }) {
                                 registrarAddress={registrarAddress}
                                 phone={null} // Schema doesn't split these well yet, user edits text
                                 email={null}
-                                website={ipo.allotment?.allotmentLink} // Often same
                                 allotment={ipo.allotment}
                             />
                         </div>

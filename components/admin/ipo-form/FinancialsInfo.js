@@ -6,7 +6,6 @@ const FinancialsInfo = ({ data, onChange, type }) => {
     const ROW_LABELS = {
         assets: "Assets",
         totalIncome: "Total Income",
-        totalExpenditure: "Total Expenditure",
         pat: "Profit After Tax",
         ebitda: "EBITDA",
         netWorth: "NET Worth",
@@ -14,7 +13,7 @@ const FinancialsInfo = ({ data, onChange, type }) => {
         totalBorrowing: "Total Borrowing"
     };
 
-    const ROWS_ORDER = ['assets', 'totalIncome', 'totalExpenditure', 'pat', 'ebitda', 'netWorth', 'reservesSurplus', 'totalBorrowing'];
+    const ROWS_ORDER = ['assets', 'totalIncome', 'pat', 'ebitda', 'netWorth', 'reservesSurplus', 'totalBorrowing'];
 
     const KPI_LABELS = {
         sme: {
