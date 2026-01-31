@@ -40,7 +40,7 @@ export default function IPOHeader({ ipo }) {
                     )}
 
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight mb-2">
+                        <h1 className="text-xl md:text-3xl font-extrabold text-slate-900 leading-tight mb-2">
                             {companyName}
                         </h1>
                         <div className="flex flex-wrap gap-2 items-center text-sm">

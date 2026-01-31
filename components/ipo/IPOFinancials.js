@@ -54,12 +54,12 @@ export default function IPOFinancials({ financials, type }) {
                     <tbody>
                         {metrics.map((metric, i) => (
                             <tr key={metric.key} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50">
-                                <td className={`py-3 px-4 text-sm font-bold text-slate-700 whitespace-nowrap ${metric.key === 'pat' ? 'text-slate-900' : ''
+                                <td className={`py-2 px-2 text-xs font-bold text-slate-700 whitespace-nowrap ${metric.key === 'pat' ? 'text-slate-900' : ''
                                     }`}>
                                     {metric.label}
                                 </td>
                                 {data.map((col, j) => (
-                                    <td key={j} className={`py-3 px-4 text-sm font-medium text-right whitespace-nowrap ${metric.key === 'pat' ? 'font-bold text-slate-900' : 'text-slate-600'
+                                    <td key={j} className={`py-2 px-2 text-xs font-medium text-right whitespace-nowrap ${metric.key === 'pat' ? 'font-bold text-slate-900' : 'text-slate-600'
                                         }`}>
                                         {col[metric.key] !== undefined && col[metric.key] !== null ? col[metric.key] : '-'}
                                     </td>

@@ -160,13 +160,17 @@ export default function IPODetailsPage({ ipo }) {
                                 <IPOGMPCard gmp={gmp} priceBand={priceBand} />
                             </div>
 
-                            <IPOTimeline dates={dates} />
-                            <IPOStatsGrid ipo={ipo} />
-
-                            {/* New Sections */}
-                            <IPOLotSize lotDistribution={lotDistribution} limits={limits} lotSize={lotSize} />
+                            {/* Mobile Only: Subscription Table */}
+                            <div className="block lg:hidden mb-6">
+                                <IPOSubscriptionTable subscription={subscription} />
+                            </div>
 
                             <IPOFinancials financials={financials} type={ipo.type} />
+
+                            <IPOStatsGrid ipo={ipo} />
+                            <IPOTimeline dates={dates} />
+                            <IPOLotSize lotDistribution={lotDistribution} limits={limits} lotSize={lotSize} />
+
                             <IPOPeers peers={peers} />
 
                             <IPOAbout title={`About ${companyName}`} content={description} />

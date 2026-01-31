@@ -12,7 +12,7 @@ export default function IPORow({ ipo }) {
   };
 
   const rawStatus = getIPOStatusFromDates(normalizedDates);
-  const status = rawStatus === "Open" ? "Open" : "Closed";
+  const status = rawStatus || "Upcoming";
 
   // ✅ Price band
   const priceBand =

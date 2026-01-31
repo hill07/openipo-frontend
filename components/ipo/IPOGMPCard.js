@@ -27,7 +27,7 @@ export default function IPOGMPCard({ gmp, priceBand }) {
             <span className="text-xs font-medium text-slate-500">Expected Premium</span>
 
             <div className="flex items-center gap-2 mt-1 mb-3">
-                <span className={`text-2xl font-extrabold ${gmpVal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                <span className={`text-xl md:text-2xl font-extrabold ${gmpVal >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                     ₹{gmpVal}
                 </span>
 

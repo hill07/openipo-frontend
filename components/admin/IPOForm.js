@@ -163,7 +163,14 @@ export default function IPOForm({ initialData = {}, isEdit = false }) {
 
         try {
             // Clean Payload: Convert strings to numbers where necessary
-            const cleanNumber = (val) => (val === '' || val === null || val === undefined ? null : Number(val));
+            const cleanNumber = (val) => {
+                if (val === '' || val === null || val === undefined) return null;
+                if (typeof val === 'number') return val;
+                // Handle string: strip commas, then parse
+                const str = String(val).replace(/,/g, '').trim();
+                const num = Number(str);
+                return isNaN(num) ? null : num;
+            };
 
             const payload = {
                 ...formData,

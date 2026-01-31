@@ -176,6 +176,8 @@ const FinancialsInfo = ({ data, onChange, type }) => {
                             {(data.financials?.table || []).map((col, idx) => (
                                 <div key={idx} className="w-32 shrink-0">
                                     <input
+                                        type="number"
+                                        step="0.01"
                                         className="w-full bg-slate-950/50 border border-slate-700/50 rounded px-3 py-2 text-right text-sm text-white focus:border-blue-500"
                                         placeholder="0.00"
                                         value={col[rowKey] || ''}
