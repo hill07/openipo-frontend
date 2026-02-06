@@ -1,5 +1,6 @@
-import Head from "next/head";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
+import SEO from "../components/SEO";
 import IPORow from "../components/IPORow";
 import TodayHighlights from "../components/TodayHighlights";
 import { iposAPI } from "../services/api";
@@ -10,7 +11,6 @@ export async function getServerSideProps() {
     // Limit to Top 20 as per user request
     const response = await iposAPI.getAll({ limit: 20, page: 1 });
 
-    // V2 Response: { success: true, data: { ipos: [], count: ... } }
     const iposList = response.data?.ipos || [];
 
     return {
@@ -43,13 +43,8 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
     setSavedSlugs(saved);
   }, []);
 
-  /**
-   * ✅ Normalize IPO dates into the format required by getIPOStatusFromDates
-   * Backend V2 returns: dates: { open, close, allotment, listing }
-   */
   const iposWithStatus = (initialIPOs || []).map((ipo) => {
     const dates = ipo.dates || {};
-    // Ensure we have strings or valid inputs for the helper
     const normalizedDates = {
       open: dates.open,
       close: dates.close,
@@ -59,34 +54,25 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
 
     return {
       ...ipo,
-      startDate: dates.open, // Backwards compat for sorting/filters
+      startDate: dates.open,
       endDate: dates.close,
       allotmentDate: dates.allotment,
       listingDate: dates.listing,
       dates: normalizedDates,
-      listingDate: dates.listing,
-      dates: normalizedDates,
-      // Prioritize computed status from dates. Fallback to manual status if provided.
       status: getIPOStatusFromDates(normalizedDates) || ipo.status,
       type: ipo.type === "MAINBOARD" ? "Mainboard" : ipo.type,
-      // Map V2 nested fields to flat structure for IPORow
       minimumPrice: ipo.priceBand?.min,
       maximumPrice: ipo.priceBand?.max,
-      maximumPrice: ipo.priceBand?.max,
       gmpPrice: ipo.gmp?.current,
-      allotment: ipo.allotment, // Pass full allotment object
+      allotment: ipo.allotment,
     };
   });
 
 
   let filteredIPOs = [...iposWithStatus];
 
-  /**
-   * ✅ Status filter
-   */
   if (filterStatus !== "all") {
     const selectedStatuses = filterStatus.split(",").map((s) => s.trim());
-
     filteredIPOs = filteredIPOs.filter((ipo) => {
       let broadStatus = ipo.status;
       if (["Listed", "Allotted"].includes(ipo.status)) {
@@ -96,10 +82,6 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
     });
   }
 
-  /**
-   * ✅ Type filter (Mainboard/SME)
-   * DB has: MAINBOARD, SME
-   */
   if (filterType !== "all") {
     filteredIPOs = filteredIPOs.filter((ipo) => {
       if (filterType === "Mainboard") return ipo.type === "Mainboard";
@@ -108,9 +90,6 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
     });
   }
 
-  /**
-   * ✅ Search filter
-   */
   if (searchQuery) {
     const query = searchQuery.toLowerCase();
     filteredIPOs = filteredIPOs.filter(
@@ -126,31 +105,46 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
     );
   }
 
-  /**
-   * ✅ Sort by IPO Open Date (startDate)
-   * Newest first
-   */
   filteredIPOs.sort((a, b) => {
     const aDate = a?.startDate ? new Date(a.startDate) : new Date(0);
     const bDate = b?.startDate ? new Date(b.startDate) : new Date(0);
     return bDate - aDate;
   });
 
-  /**
-   * ✅ Saved IPOs section
-   */
   const savedIPOs = filteredIPOs.filter((ipo) => savedSlugs.includes(ipo.slug));
 
   return (
     <>
-      <Head>
-        <title>OpenIPO - Indian IPO Dashboard</title>
-        <meta
-          name="description"
-          content="Track open IPOs, upcoming IPOs, subscription, GMP, listing dates, and detailed information."
-        />
-        <meta name="google-site-verification" content="T-CiHxG-bGu2yb7N5S-GLHG2kiOhC9LERUuDK2nWXos" />
-      </Head>
+      <SEO
+        title="IPO – Upcoming IPOs, IPO GMP Today & Allotment Status"
+        description="OpenIPO provides latest IPO updates in India including upcoming IPOs, IPO GMP today, allotment status and detailed IPO information."
+        canonical="https://openipo.in"
+      />
+
+      {/* Schema for Authority Hub */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "OpenIPO",
+            "url": "https://openipo.in",
+            "logo": "https://openipo.in/logo.png", // Ensure this exists or update
+            "sameAs": []
+          })
+        }}
+      />
+
+      {/* Hero Section / Intro */}
+      <div className="hero-section">
+        <div className="container">
+          <h1 className="main-title">IPO – Complete Indian IPO Platform</h1>
+          <p className="hero-desc">
+            Your trusted source for the latest <strong>IPO</strong> news, GMP trends, and allotment updates in the Indian share market.
+          </p>
+        </div>
+      </div>
 
       {/* Sticky Filter Bar */}
       <div className="sticky-filter-bar">
@@ -201,57 +195,143 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
       <div className="main-container">
         <div className="sidebar-section">
           <TodayHighlights todayHighlights={todayHighlights} ipos={iposWithStatus} />
+
+          {/* Internal Link Section: Today IPO */}
+          <div className="seo-card">
+            <h3>Today IPO Updates</h3>
+            <p>Check the latest market movements.</p>
+            <Link href="/ipo-calendar" className="seo-link">See Upcoming IPO Calendar</Link>
+          </div>
         </div>
 
-        <div className="ipo-list-section">
-          {savedIPOs.length > 0 && (
-            <section className="ipo-section saved-section">
-              <h2 className="section-title">⭐ Saved IPOs ({savedIPOs.length})</h2>
-              <div className="ipo-list">
-                {savedIPOs.map((ipo) => (
-                  <IPORow key={ipo._id || ipo.slug} ipo={ipo} />
-                ))}
+        <div className="content-column">
+          <div className="ipo-list-section">
+            {savedIPOs.length > 0 && (
+              <section className="ipo-section saved-section">
+                <h2 className="section-title">⭐ Saved IPOs ({savedIPOs.length})</h2>
+                <div className="ipo-list">
+                  {savedIPOs.map((ipo) => (
+                    <IPORow key={ipo._id || ipo.slug} ipo={ipo} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section className="ipo-section">
+              <div className="section-header">
+                <h2 className="section-title">
+                  {filterStatus === "all"
+                    ? "All IPOs"
+                    : `${filterStatus} IPOs`}{" "}
+                  ({filteredIPOs.length})
+                </h2>
+              </div>
+
+              <div className="scrollable-list-container">
+                <div className="ipo-list">
+                  {filteredIPOs.map((ipo) => {
+                    return <IPORow key={ipo._id || ipo.slug} ipo={ipo} />;
+                  })}
+                </div>
+
+                {filteredIPOs.length > 5 && (
+                  <div className="list-footer">
+                    <span className="footer-text">Showing Top matches</span>
+                  </div>
+                )}
               </div>
             </section>
-          )}
 
-          <section className="ipo-section">
-            <div className="section-header">
-              <h2 className="section-title">
-                {filterStatus === "all"
-                  ? "All IPOs"
-                  : `${filterStatus} IPOs`}{" "}
-                ({filteredIPOs.length})
-              </h2>
-            </div>
-
-            {/* Scrollable Container */}
-            <div className="scrollable-list-container">
-              <div className="ipo-list">
-                {filteredIPOs.map((ipo) => {
-                  return <IPORow key={ipo._id || ipo.slug} ipo={ipo} />;
-                })}
+            {filteredIPOs.length === 0 && (
+              <div className="empty-state">
+                <p>No IPOs found matching your criteria.</p>
               </div>
+            )}
+          </div>
 
-              {/* End of list indicator */}
-              {filteredIPOs.length > 5 && (
-                <div className="list-footer">
-                  <span className="footer-text">Showing Top matches</span>
-                </div>
-              )}
-            </div>
+          {/* SEO Content Sections (Authority Hub) */}
+          <div className="seo-content-wrapper">
 
-          </section>
+            {/* Section 1: What is IPO */}
+            <section className="seo-text-section">
+              <h2>What is IPO?</h2>
+              <p>
+                An <strong>Initial Public Offering (IPO)</strong> is the process by which a private company offers its shares to the public for the first time.
+                Investing in an <strong>IPO</strong> allows retail investors to buy shares directly from the company before they are traded on stock exchanges like NSE and BSE.
+              </p>
+              <p>
+                Understanding the core of <Link href="/what-is-ipo">What is IPO</Link> is crucial for every investor. It marks the transition of a company from private to public,
+                unlocking value for early investors and raising capital for growth.
+              </p>
+            </section>
 
-          {filteredIPOs.length === 0 && (
-            <div className="empty-state">
-              <p>No IPOs found matching your criteria.</p>
-            </div>
-          )}
+            {/* Section 2: Upcoming IPO */}
+            <section className="seo-text-section">
+              <h2>Upcoming IPO in India</h2>
+              <p>
+                Staying updated with the <Link href="/ipo-calendar">Upcoming IPO</Link> calendar is essential for planning your investments.
+                The Indian market is witnessing a surge in Mainboard and SME <strong>IPO</strong> launches.
+                Our platform provides real-time dates for Open, Close, and Listing days so you never miss an opportunity.
+              </p>
+            </section>
+
+            {/* Section 3: IPO GMP */}
+            <section className="seo-text-section">
+              <h2>IPO GMP (Grey Market Premium)</h2>
+              <p>
+                The <Link href="/ipo-gmp">IPO GMP Today</Link> serves as a key indicator of the potential listing gain.
+                GMP is the premium at which IPO shares are traded in the unofficial market before listing.
+                High <strong>IPO</strong> GMP often suggests strong investor demand and likely positive listing debut.
+              </p>
+            </section>
+
+            {/* Section 4: IPO Allotment */}
+            <section className="seo-text-section">
+              <h2>IPO Allotment Status</h2>
+              <p>
+                After applying, the next big event is the <Link href="/ipo-allotment">IPO Allotment Status</Link>.
+                Registrars like Link Intime and KFintech handle the allotment process.
+                You can check if you have been allotted shares by visiting our dedicated allotment checking guide.
+              </p>
+            </section>
+
+            {/* Section 5: How to Apply */}
+            <section className="seo-text-section">
+              <h2>How to Apply for IPO</h2>
+              <p>
+                Ideally, you need a Demat account to apply. The process is simple via UPI mandates.
+                Learn more about <Link href="/how-to-apply-ipo">How to Apply IPO</Link> effectively to maximize your chances of allotment.
+              </p>
+            </section>
+          </div>
+
         </div>
       </div>
 
       <style jsx>{`
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .main-title {
+            font-size: 2.5rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #475569;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
         .sticky-filter-bar {
           position: sticky;
           top: 60px;
@@ -266,6 +346,9 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
             top: 60px;
             padding: 10px 12px;
             overflow-x: auto;
+          }
+          .main-title {
+              font-size: 1.8rem;
           }
         }
 
@@ -329,6 +412,12 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
           height: fit-content;
         }
 
+        .content-column {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
         .ipo-section {
           margin-bottom: 26px;
         }
@@ -349,11 +438,9 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
         }
         
         .scrollable-list-container {
-            max-height: 800px; /* Fixed height for scrolling */
+            max-height: 800px;
             overflow-y: auto;
-            padding-right: 8px; /* Space for scrollbar */
-            
-            /* Clean scrollbar style */
+            padding-right: 8px;
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
@@ -395,6 +482,49 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
           text-align: center;
           color: #64748b;
           font-weight: 700;
+        }
+
+        .seo-content-wrapper {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .seo-text-section {
+            margin-bottom: 30px;
+        }
+        .seo-text-section h2 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+        .seo-text-section p {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .seo-card {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        .seo-card h3 {
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+            color: #334155;
+        }
+        .seo-card p {
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+        .seo-link {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: underline;
         }
 
         @media (max-width: 1024px) {

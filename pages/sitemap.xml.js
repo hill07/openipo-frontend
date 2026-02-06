@@ -20,34 +20,34 @@ export async function getServerSideProps({ res }) {
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>${baseUrl}/open</loc>
+    <loc>${baseUrl}/what-is-ipo</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/upcoming</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/closed</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/listed-today</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>${baseUrl}/ipo-calendar</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/ipo-gmp</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/ipo-allotment</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/how-to-apply-ipo</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>${baseUrl}/privacy-policy</loc>
@@ -72,11 +72,13 @@ export async function getServerSideProps({ res }) {
           const lastmod = ipo.meta?.lastUpdated
             ? new Date(ipo.meta.lastUpdated).toISOString()
             : new Date().toISOString();
+          // Dynamic Route: /{company}-ipo
+          // We assume ipo.slug is just the company-name
           return `  <url>
-    <loc>${baseUrl}/ipo/${ipo.slug}</loc>
+    <loc>${baseUrl}/${ipo.slug}-ipo</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>`;
         })
         .join("\n")}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import Head from "next/head";
 import Link from "next/link";
+import SEO from "../components/SEO";
 import { iposAPI } from "../services/api";
 
 // ✅ Safe Date Formatter (prevents invalid date crashes)
@@ -185,9 +185,11 @@ export default function IPOCalendarPage() {
 
   return (
     <>
-      <Head>
-        <title>IPO Calendar | OpenIPO</title>
-      </Head>
+      <SEO
+        title="Upcoming IPO Calendar 2026 - Open, Close & Listing Dates | OpenIPO"
+        description="Check the latest IPO Calendar for upcoming IPOs in India. Track IPO Open Date, Closing Date, Allotment Date, and Listing Date for Mainboard and SME IPOs."
+        canonical="https://openipo.in/ipo-calendar"
+      />
 
       <div className="page">
         <header className="header">
@@ -304,6 +306,39 @@ export default function IPOCalendarPage() {
             {!hasEventsThisMonth && <div className="empty">No IPO events this month</div>}
           </div>
         )}
+
+        {/* SEO Content Section */}
+        <section className="seo-content">
+          <h2>Upcoming IPO Calendar: Your Guide to Market Opportunities</h2>
+          <p>
+            The <strong>Upcoming IPO</strong> landscape in India is vibrant, with companies from diverse sectors lining up to go public.
+            Our <strong>IPO Calendar</strong> is the ultimate tool for investors to stay ahead of the curve. It provides a comprehensive view of all critical dates,
+            ensuring you never miss an application window or a listing debut.
+          </p>
+
+          <h3>Understanding IPO Timelines</h3>
+          <p>
+            Investing in an <Link href="/">IPO</Link> requires precise timing. The calendar highlights four key events:
+          </p>
+          <ul>
+            <li><strong>Open Date:</strong> The day bidding starts. Only bids placed during this window are valid.</li>
+            <li><strong>Close Date:</strong> The final day to submit your application. Most subscriptions happen on the last day.</li>
+            <li><strong>Allotment Date:</strong> The day when the registrar announces who got shares. You can check this on our <Link href="/ipo-allotment">IPO Allotment Status</Link> page.</li>
+            <li><strong>Listing Date:</strong> The day shares start trading on NSE and BSE.</li>
+          </ul>
+
+          <h3>Mainboard vs SME IPO Calendar</h3>
+          <p>
+            Our calendar tracks both Mainboard and SME IPOs. While Mainboard IPOs are from larger corporates, SME IPOs are from smaller enterprises offering higher risk-reward ratios.
+            Before investing, it is wise to check the <Link href="/ipo-gmp">IPO GMP Today</Link> to understand the market sentiment.
+          </p>
+
+          <h3>How to Use This Calendar</h3>
+          <p>
+            Use this calendar to plan your funds. If multiple exciting IPOs are overlapping, you might need to allocate capital strategically.
+            For beginners, we recommend reading <Link href="/what-is-ipo">What is IPO</Link> to understand the basics before diving into the schedule.
+          </p>
+        </section>
       </div>
 
       {selectedEvent && (
@@ -702,6 +737,44 @@ export default function IPOCalendarPage() {
         .primary-btn:hover {
           transform: translateY(-1px);
           box-shadow: 0 12px 32px rgba(14, 165, 233, 0.35);
+        }
+
+        .seo-content {
+            margin-top: 60px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        .seo-content h2 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        .seo-content h3 {
+            font-size: 1.4rem;
+            color: #334155;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+        .seo-content p {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .seo-content ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .seo-content li {
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        .seo-content a {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 600;
         }
 
         @media (max-width: 767px) {
