@@ -5,11 +5,11 @@
 import { iposAPI } from "../services/api";
 
 export async function getServerSideProps({ res }) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://openipo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.openipo.in";
 
   try {
     const { data: ipos } = await iposAPI.getAll({ limit: 1000 });
-    
+
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -42,19 +42,43 @@ export async function getServerSideProps({ res }) {
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>${baseUrl}/ipo-calendar</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy-policy</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/terms</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/disclaimer</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
   ${(ipos || [])
-    .map((ipo) => {
-      const lastmod = ipo.meta?.lastUpdated
-        ? new Date(ipo.meta.lastUpdated).toISOString()
-        : new Date().toISOString();
-      return `  <url>
+        .map((ipo) => {
+          const lastmod = ipo.meta?.lastUpdated
+            ? new Date(ipo.meta.lastUpdated).toISOString()
+            : new Date().toISOString();
+          return `  <url>
     <loc>${baseUrl}/ipo/${ipo.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>`;
-    })
-    .join("\n")}
+        })
+        .join("\n")}
 </urlset>`;
 
     res.setHeader("Content-Type", "text/xml");

@@ -149,6 +149,7 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
           name="description"
           content="Track open IPOs, upcoming IPOs, subscription, GMP, listing dates, and detailed information."
         />
+        <meta name="google-site-verification" content="T-CiHxG-bGu2yb7N5S-GLHG2kiOhC9LERUuDK2nWXos" />
       </Head>
 
       {/* Sticky Filter Bar */}
