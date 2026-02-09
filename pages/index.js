@@ -311,17 +311,17 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
         }
         .hero-section {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            padding: 40px 0;
+            padding: 24px 0;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .main-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #1e293b;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .hero-desc {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #475569;
             max-width: 800px;
             margin: 0 auto;

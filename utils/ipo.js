@@ -21,34 +21,41 @@ export function toStartOfDay(date) {
  * This is the single source of truth for status calculation
  */
 export function getIPOStatusFromDates(dates = {}) {
-  const now = toStartOfDay(new Date());
+  const now = new Date(); // Use current time for 10 AM check
 
-  const open = toStartOfDay(parseDate(dates.open));
-  const close = toStartOfDay(parseDate(dates.close));
-  const allotment = toStartOfDay(parseDate(dates.allotment));
-  const listing = toStartOfDay(parseDate(dates.listing));
+  // Parse dates
+  const open = parseDate(dates.open);
+  const close = parseDate(dates.close);
+  const listing = parseDate(dates.listing);
 
-  // If no dates available => Upcoming by default
-  if (!open && !close && !allotment && !listing) return "Upcoming";
+  // 1. Listed: Starts from Listing Date 10:00 AM
+  if (listing) {
+    const listingTime = new Date(listing);
+    listingTime.setHours(10, 0, 0, 0); // 10:00 AM IST assumption (local time of server/user)
+    if (now >= listingTime) return "Listed";
+  }
 
-  // Listed if listing date passed
-  if (listing && now >= listing) return "Listed";
+  // Set start of day for other comparisons to avoid time issues
+  const todayStart = toStartOfDay(now);
+  const openStart = toStartOfDay(open);
+  const closeStart = toStartOfDay(close);
 
-  // Allotted after allotment date but before listing
-  if (allotment && now >= allotment && (!listing || now < listing))
-    return "Allotted";
-
-  // Closed after close date but before allotment
-  if (close && now > close && (!allotment || now < allotment))
+  // 2. Closed: After Close Date (and not yet Listed 10 AM)
+  if (closeStart && todayStart > closeStart) {
     return "Closed";
+  }
 
-  // Open between open and close
-  if (open && close && now >= open && now <= close) return "Open";
+  // 3. Open: Between Open and Close (inclusive)
+  if (openStart && closeStart && todayStart >= openStart && todayStart <= closeStart) {
+    return "Open";
+  }
 
-  // Upcoming before open
-  if (open && now < open) return "Upcoming";
+  // 4. Upcoming: Before Open Date
+  if (openStart && todayStart < openStart) {
+    return "Upcoming";
+  }
 
-  // fallback
+  // Fallback
   return "Upcoming";
 }
 

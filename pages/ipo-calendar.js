@@ -225,12 +225,14 @@ export default function IPOCalendarPage() {
             {hasEventsThisMonth ? (
               mobileEvents.map(({ key, dateObj, events }) => (
                 <div key={key} className="day-card">
-                  <div className="day-card-date">
-                    {dateObj.toLocaleDateString(undefined, {
-                      weekday: "short",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  <div className="day-card-header">
+                    <div className="day-card-date">
+                      {dateObj.toLocaleDateString(undefined, {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </div>
                   </div>
                   <div className="badges">
                     {events.map((event, idx) => (
@@ -240,11 +242,19 @@ export default function IPOCalendarPage() {
                         style={{ backgroundColor: EVENT_META[event.type].color + "1a" }}
                         onClick={() => setSelectedEvent(event)}
                       >
+                        <div className="logo-mini-wrapper">
+                          {event.ipo.logo ? (
+                            <img src={event.ipo.logo} alt={event.ipo.companyName} className="logo-mini" />
+                          ) : (
+                            <div className="logo-mini-placeholder">{event.ipo.companyName?.charAt(0)}</div>
+                          )}
+                        </div>
                         <span
                           className="dot"
                           style={{ backgroundColor: EVENT_META[event.type].color }}
                         />
-                        {EVENT_META[event.type].label} • {event.ipo.companyName}
+                        <span className="event-label">{EVENT_META[event.type].label}</span>
+                        <span className="company-name-mobile">{event.ipo.companyName}</span>
                       </button>
                     ))}
                   </div>
@@ -346,12 +356,12 @@ export default function IPOCalendarPage() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="logo-wrap">
-                {selectedEvent.ipo.companyLogo ? (
+                {selectedEvent.ipo.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={selectedEvent.ipo.companyLogo} alt={selectedEvent.ipo.companyName} />
+                  <img src={selectedEvent.ipo.logo} alt={selectedEvent.ipo.companyName} />
                 ) : (
                   <div className="logo-fallback">
-                    {selectedEvent.ipo.companyName?.slice(0, 2)?.toUpperCase() || "IPO"}
+                    {selectedEvent.ipo.companyName?.slice(0, 1)?.toUpperCase() || "I"}
                   </div>
                 )}
               </div>
@@ -623,6 +633,40 @@ export default function IPOCalendarPage() {
           font-weight: 700;
           color: #0f172a;
           margin-bottom: 8px;
+          border-bottom: 1px solid #f1f5f9;
+          padding-bottom: 8px;
+        }
+        .logo-mini-wrapper {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+        }
+        .logo-mini {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .logo-mini-placeholder {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748b;
+        }
+        .event-label {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .company-name-mobile {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .badges {
           display: flex;

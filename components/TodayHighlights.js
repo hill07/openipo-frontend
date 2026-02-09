@@ -115,7 +115,9 @@ export default function TodayHighlights({ ipos }) {
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>Highlights</h3>
+                <Link href="/todays-snapshot" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <h3 style={{ cursor: 'pointer' }}>Highlights &rarr;</h3>
+                </Link>
                 <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
               </div>
               <div className="modal-body">
@@ -219,12 +221,12 @@ function HighlightsContent({ todayHighlights, ipos, isMobile }) {
 
 
 
-        {!isMobile && (
-          <h2 className="sidebar-title">
-            <span className="dot-pulse"></span>
-            Today&apos;s Snapshot
+        <Link href="/todays-snapshot" style={{ textDecoration: 'none' }}>
+          <h2 className="sidebar-title" style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between' }}>
+            <span>Today&apos;s Snapshot</span>
+            <span style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: '600' }}>View All &rarr;</span>
           </h2>
-        )}
+        </Link>
 
         <HighlightWidget
           title="Open Today"
@@ -386,7 +388,7 @@ function HighlightWidget({ title, count, companies, type, icon }) {
         <span className={`widget-count ${isEmpty ? "zero" : ""}`}>{count}</span>
       </div>
 
-      {!isEmpty && companies.length > 0 && (
+      {/* {!isEmpty && companies.length > 0 && (
         <div className="widget-companies">
           {companies.slice(0, 2).map((company, idx) => (
             <Link key={idx} href={`/ipo/${company.slug}`} className="company-link">
@@ -408,9 +410,9 @@ function HighlightWidget({ title, count, companies, type, icon }) {
           ))}
           {count > 2 && <span className="more-count">+{count - 2} others</span>}
         </div>
-      )}
+      )} */}
 
-      {isEmpty && <div className="widget-empty">Nothing today</div>}
+      {/* {isEmpty && <div className="widget-empty">Nothing today</div>} */}
 
       {/* Styles */}
       <style jsx>{`
@@ -620,7 +622,7 @@ function ClosingTodayWidget({ count, companies, ipos, icon }) {
         </div>
       )}
 
-      {isEmpty && <div className="widget-empty">Nothing closing today</div>}
+      {/* {isEmpty && <div className="widget-empty">Nothing closing today</div>} */}
 
       {/* Styles */}
       <style jsx>{`

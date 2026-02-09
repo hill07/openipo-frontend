@@ -69,6 +69,7 @@ export default function IPORow({ ipo }) {
           badgeText: "#0f172a",
           dot: "#cbd5e1"
         };
+      /*
       case "Allotted":
         return {
           border: "#8b5cf6",
@@ -76,6 +77,7 @@ export default function IPORow({ ipo }) {
           badgeText: "#6b21a8",
           dot: "#a855f7"
         };
+      */
       default:
         return {
           border: "#cbd5e1",
