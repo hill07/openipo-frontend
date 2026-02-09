@@ -1,0 +1,123 @@
+﻿
+> frontend@0.1.0 lint
+> eslint
+
+
+D:\openipo\frontend\components\AdminLayout.js
+  21:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  19 |
+  20 |     try {
+> 21 |       setAdminUser(JSON.parse(user));
+     |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  22 |       setLoading(false);
+  23 |     } catch (error) {
+  24 |       localStorage.removeItem("adminToken");  react-hooks/set-state-in-effect
+  23:14  warning  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+
+D:\openipo\frontend\components\Footer.js
+  11:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\openipo\frontend\components\IPORow.js
+  23:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  21 |   useEffect(() => {
+  22 |     if (!ipo?.slug) return;
+> 23 |     setIsSaved(isIPOSaved(ipo.slug));
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  24 |     const handleWatchlistChange = () => setIsSaved(isIPOSaved(ipo.slug));
+  25 |     window.addEventListener("watchlist-changed", handleWatchlistChange);
+  26 |     return () => window.removeEventListener("watchlist-changed", handleWatchlistChange);  react-hooks/set-state-in-effect
+
+D:\openipo\frontend\components\Navbar.js
+    8:10  warning  'darkMode' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   10:23  warning  'setSearchQuery' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   16:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  14 |     if (typeof window !== "undefined") {
+  15 |       const saved = localStorage.getItem("darkMode") === "true";
+> 16 |       setDarkMode(saved);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  17 |       if (saved) {
+  18 |         document.documentElement.classList.add("dark");
+  19 |       } else {  react-hooks/set-state-in-effect
+   27:9   warning  'handleSearch' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+  258:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @next/next/no-img-element
+
+D:\openipo\frontend\components\TodayHighlights.js
+   62:43  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+   69:26  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+  220:16  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react/no-unescaped-entities
+  506:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  504 |     });
+  505 |
+> 506 |     setCountdowns(newCountdowns);
+      |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  507 |
+  508 |     // Update countdown every second
+  509 |     const interval = setInterval(() => {  react-hooks/set-state-in-effect
+
+D:\openipo\frontend\pages\index.js
+  43:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  41 |
+  42 |   useEffect(() => {
+> 43 |     setSavedSlugs(getSavedIPOs());
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  44 |     const handleWatchlistChange = () => setSavedSlugs(getSavedIPOs());
+  45 |
+  46 |     window.addEventListener("watchlist-changed", handleWatchlistChange);  react-hooks/set-state-in-effect
+
+D:\openipo\frontend\pages\ipo\[slug].js
+  62:9  warning  The 'ipo' logical expression could make the dependencies of useMemo Hook (at line 99) change on every render. To fix this, wrap the initialization of 'ipo' in its own useMemo() Hook          react-hooks/exhaustive-deps
+  63:9  warning  The 'details' logical expression could make the dependencies of useMemo Hook (at line 99) change on every render. To fix this, wrap the initialization of 'details' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+D:\openipo\frontend\pages\listed-today.js
+  4:8  warning  'IPOCard' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\openipo\frontend\pages\open.js
+  3:8  warning  'Link' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\openipo\frontend\utils\date.js
+  20:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  41:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  64:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  79:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  94:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\openipo\frontend\utils\ipoSummary.js
+  6:10  warning  'formatDate' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 24 problems (8 errors, 16 warnings)
+
