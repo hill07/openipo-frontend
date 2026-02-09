@@ -104,16 +104,18 @@ export default function TodayHighlights({ ipos }) {
 
       {/* Mobile View: Floating Button + Modal */}
       <div className="mobile-container">
-        <button className="side-toggle-btn" onClick={() => setShowModal(true)} aria-label="Show Today's Highlights">
-          <span className="btn-icon">⚡</span>
-          <span className="btn-text">Today&apos;s Highlights</span>
-        </button>
+        {!showModal && (
+          <button className="side-toggle-btn" onClick={() => setShowModal(true)} aria-label="Show Highlights">
+            <span className="btn-icon">⚡</span>
+            <span className="btn-text"> today's Highlights</span>
+          </button>
+        )}
 
         {showModal && (
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>Today&apos;s Snapshot</h3>
+                <h3>Highlights</h3>
                 <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
               </div>
               <div className="modal-body">
@@ -135,20 +137,20 @@ export default function TodayHighlights({ ipos }) {
         .side-toggle-btn {
           position: fixed;
           right: 0;
-          top: 50%;
+          top: 60%; 
           transform: translateY(-50%);
           background: #1e293b;
           color: #fff;
           border: none;
           border-radius: 8px 0 0 8px;
-          padding: 16px 8px;
-          z-index: 50;
+          padding: 12px 6px; 
+          z-index: 9999;
           cursor: pointer;
           box-shadow: -4px 0 12px rgba(0,0,0,0.15);
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           transition: transform 0.2s ease;
         }
         .side-toggle-btn:hover { transform: translateY(-50%) translateX(-2px); background: #0f172a; }
@@ -156,11 +158,11 @@ export default function TodayHighlights({ ipos }) {
           writing-mode: vertical-rl;
           text-orientation: mixed;
           font-weight: 700;
-          font-size: 0.85rem;
+          font-size: 0.75rem; 
           letter-spacing: 0.5px;
           text-transform: uppercase;
         }
-        .btn-icon { font-size: 1.2rem; }
+        .btn-icon { font-size: 1rem; }
         .modal-overlay {
           position: fixed; top: 0; left: 0; right: 0; bottom: 0;
           background: rgba(0,0,0,0.5);

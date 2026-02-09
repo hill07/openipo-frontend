@@ -196,12 +196,7 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
         <div className="sidebar-section">
           <TodayHighlights todayHighlights={todayHighlights} ipos={iposWithStatus} />
 
-          {/* Internal Link Section: Today IPO */}
-          <div className="seo-card">
-            <h3>Today IPO Updates</h3>
-            <p>Check the latest market movements.</p>
-            <Link href="/ipo-calendar" className="seo-link">See Upcoming IPO Calendar</Link>
-          </div>
+
         </div>
 
         <div className="content-column">
@@ -506,26 +501,7 @@ export default function Home({ ipos: initialIPOs, todayHighlights }) {
             margin-bottom: 10px;
         }
         
-        .seo-card {
-            background: #f1f5f9;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-        .seo-card h3 {
-            margin-bottom: 8px;
-            font-size: 1.2rem;
-            color: #334155;
-        }
-        .seo-card p {
-            color: #64748b;
-            margin-bottom: 12px;
-        }
-        .seo-link {
-            color: #2563eb;
-            font-weight: 600;
-            text-decoration: underline;
-        }
+
 
         @media (max-width: 1024px) {
           .main-container {
