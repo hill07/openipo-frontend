@@ -168,6 +168,7 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <div className="linksContainer desktopLinks" id="desktop-links">
+            <Link href="/" className="link">Home</Link>
             <Link href="/upcoming" className="link">Upcoming</Link>
             <Link href="/open" className="link">Open</Link>
             <Link href="/closed" className="link">Closed</Link>
@@ -189,6 +190,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {menuOpen && (
           <div className="mobileMenu">
+            <Link href="/" className="mobileLink" onClick={() => setMenuOpen(false)}>Home</Link>
             <Link href="/upcoming" className="mobileLink" onClick={() => setMenuOpen(false)}>Upcoming</Link>
             <Link href="/open" className="mobileLink" onClick={() => setMenuOpen(false)}>Open</Link>
             <Link href="/closed" className="mobileLink" onClick={() => setMenuOpen(false)}>Closed</Link>
