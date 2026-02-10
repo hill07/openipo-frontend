@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <>
       <Head>
-        <link rel="icon" href="https://img.sanishtech.com/u/c6cbaa8a547f26aa700087de181b3b54.png" />
+        <link rel="icon" href="https://img.sanishtech.com/u/98b393b12a5084249dc441c4814ef91c.png" />
         <style>
           {`
             /* Navbar styling */
@@ -159,7 +159,7 @@ export default function Navbar() {
         <div className="navInner">
           {/* Logo */}
           <Link href="/" className="logo">
-            <img src="https://img.sanishtech.com/u/c6cbaa8a547f26aa700087de181b3b54.png" className="logoImage" />
+            <img src="https://img.sanishtech.com/u/98b393b12a5084249dc441c4814ef91c.png" className="logoImage" />
             <div className="logoText">
               <span className="brand">OpenIPO</span>
               <span className="tagline">Indian IPO Dashboard</span>

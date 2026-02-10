@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 // Base URL (aligned with regular api.js strategies)
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ||
-    (typeof window === 'undefined' ? "http://localhost:5000/api" : "/api");
+// const API_BASE = process.env.NEXT_PUBLIC_API_BASE ||
+//     (typeof window === 'undefined' ? "http://localhost:5000/api" : "/api");
 // 
-// const API_BASE = (typeof window === 'undefined')
-//     ? (process.env.API_PROXY_TARGET || "https://openipo-backend.onrender.com") + "/api"
-//     : "/api";
+const API_BASE = (typeof window === 'undefined')
+    ? (process.env.API_PROXY_TARGET || "https://openipo-backend.onrender.com") + "/api"
+    : "/api";
 
 const adminApi = axios.create({
     baseURL: API_BASE,
