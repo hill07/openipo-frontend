@@ -6,15 +6,15 @@ import axios from 'axios';
 import { authStorage } from '../utils/authStorage';
 
 // // // Base URL from env or dynamic based on environment
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ||
-  (typeof window === 'undefined' ? "http://localhost:5000/api" : "/api");
+// const API_BASE = process.env.NEXT_PUBLIC_API_BASE ||
+//   (typeof window === 'undefined' ? "http://localhost:5000/api" : "/api");
 
 // Base URL determination:
 // Server-side (SSR): Use direct backend URL (remote)
 // // Client-side: Use relative path /api to go through Next.js proxy
-// const API_BASE = (typeof window === 'undefined')
-//   ? (process.env.API_PROXY_TARGET || (process.env.NODE_ENV === 'production' ? 'https://openipo-backend.onrender.com' : 'http://localhost:5000')) + '/api'
-//   : "/api";
+const API_BASE = (typeof window === 'undefined')
+  ? (process.env.API_PROXY_TARGET || (process.env.NODE_ENV === 'production' ? 'https://openipo-backend.onrender.com' : 'http://localhost:5000')) + '/api'
+  : "/api";
 
 // Create Axios instance
 const api = axios.create({
