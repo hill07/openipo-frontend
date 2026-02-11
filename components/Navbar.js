@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <>
       <Head>
-        <link rel="icon" href="https://img.sanishtech.com/u/98b393b12a5084249dc441c4814ef91c.png" />
+        <link rel="icon" href="https://img.sanishtech.com/u/dfd4e221dc8c68fcab6841e716b2393c.png" />
         <style>
           {`
             /* Navbar styling */
